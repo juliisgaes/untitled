@@ -3,7 +3,7 @@
 #include <raylib.h>
 
 // Probablemente en un futuro esto se encuentre en un archivo "header".
-int menu(bool* depuracion_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr);
+int menu(bool* depuracion_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Texture2D cursor);
 
 // Función principal.
 int main(void) {
@@ -21,6 +21,9 @@ int main(void) {
 	// Creando la ventana principal.
 	InitWindow(500, 500, "untitled - 0.1");
 
+	// Cargando texturas a la gpu.
+	Texture2D cursor = LoadTexture("recursos/cursor.png");
+
 	// Estableciendo el límite de FPS.
 	SetTargetFPS(60);
 
@@ -36,7 +39,7 @@ int main(void) {
 		// Comprobación de escenas.
 		switch (escena_actual) {
 			case 1:
-				menu(depuracion_ptr, posicion_jugador_x_ptr, posicion_jugador_y_ptr);
+				menu(depuracion_ptr, posicion_jugador_x_ptr, posicion_jugador_y_ptr, cursor);
 			break;
 		}
 
@@ -45,12 +48,15 @@ int main(void) {
 
 	}
 
+	// Descargando texturas de la gpu.
+	UnloadTexture(cursor);
+
 	return 0;
 
 }
 
 // Menú inicial.
-int menu(bool* depuracion_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr) {
+int menu(bool* depuracion_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Texture2D cursor) {
 
 	// Comprobando entradas del jugador.
 	if (IsKeyDown(KEY_D) && *posicion_jugador_x_ptr <= 450) {
@@ -75,7 +81,7 @@ int menu(bool* depuracion_ptr, float* posicion_jugador_x_ptr, float* posicion_ju
 	}
 
 	// Creando al jugador.
-	DrawRectangle(*posicion_jugador_x_ptr, *posicion_jugador_y_ptr, 50, 50, WHITE);
+	DrawTexture(cursor, *posicion_jugador_x_ptr, *posicion_jugador_y_ptr, WHITE);
 
 	// Cosas para depuración.
 	if (*depuracion_ptr == true) {
