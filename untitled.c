@@ -3,26 +3,21 @@
 #include <raylib.h>
 
 // Probablemente en un futuro esto se encuentre en un archivo "header".
-int menu(bool* depuracion_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Texture2D cursor);
+int menu(bool* depuracion_ptr, unsigned int* escena_actual_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Texture2D cursor);
 
 // Función principal.
 int main(void) {
 
-	// Inicializando variables.
+	// Declarando variables.
 	bool depuracion = true;
-	int escena_actual = 1;
-	float posicion_jugador_x = 0, posicion_jugador_y = 450;
+	unsigned int escena_actual;
 
-	// Inicializando punteros.
+	// Declarando punteros.
 	bool* depuracion_ptr = &depuracion;
-	float* posicion_jugador_x_ptr = &posicion_jugador_x;
-	float* posicion_jugador_y_ptr = &posicion_jugador_y;
+	unsigned int* escena_actual_ptr = &escena_actual;
 
 	// Creando la ventana principal.
 	InitWindow(500, 500, "untitled - 0.1");
-
-	// Cargando texturas a la gpu.
-	Texture2D cursor = LoadTexture("recursos/cursor.png");
 
 	// Estableciendo el límite de FPS.
 	SetTargetFPS(60);
@@ -38,9 +33,28 @@ int main(void) {
 
 		// Comprobación de escenas.
 		switch (escena_actual) {
-			case 1:
-				menu(depuracion_ptr, posicion_jugador_x_ptr, posicion_jugador_y_ptr, cursor);
+
+			// Cargando menú.
+			case 0:
+				float* posicion_jugador_x_ptr = MemAlloc(sizeof(float));
+				float* posicion_jugador_y_ptr = MemAlloc(sizeof(float));
+				*posicion_jugador_y_ptr = 450;
+				Texture2D cursor = LoadTexture("recursos/cursor.png");
+				escena_actual++;
 			break;
+
+			// Ejecutando menú.
+			case 1:
+				menu(depuracion_ptr, escena_actual_ptr, posicion_jugador_x_ptr, posicion_jugador_y_ptr, cursor);
+			break;
+
+			// Descargando menú.
+			case 2:
+				MemFree(posicion_jugador_x_ptr);
+				MemFree(posicion_jugador_y_ptr);
+				UnloadTexture(cursor);
+			break;
+
 		}
 
 		// Terminando de dibujar.
@@ -48,15 +62,12 @@ int main(void) {
 
 	}
 
-	// Descargando texturas de la gpu.
-	UnloadTexture(cursor);
-
 	return 0;
 
 }
 
 // Menú inicial.
-int menu(bool* depuracion_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Texture2D cursor) {
+int menu(bool* depuracion_ptr, unsigned int* escena_actual_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Texture2D cursor) {
 
 	// Comprobando entradas del jugador.
 	if (IsKeyDown(KEY_D) && *posicion_jugador_x_ptr <= 450) {
@@ -77,6 +88,11 @@ int menu(bool* depuracion_ptr, float* posicion_jugador_x_ptr, float* posicion_ju
 	if (IsKeyDown(KEY_S) && *posicion_jugador_y_ptr <= 450) {
 			
 		*posicion_jugador_y_ptr += 100 * GetFrameTime();
+
+	}
+	if (IsKeyDown(KEY_P)) {
+		
+		*escena_actual_ptr = 2;
 
 	}
 
