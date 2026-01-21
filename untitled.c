@@ -90,8 +90,11 @@ int menu(bool* depuracion_ptr, unsigned int* escena_actual_ptr, float* posicion_
 		// Mostrar el sprite de espacio.
 		DrawTextureEx(*espacio_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
 
-		if (*temporizador_espacio_ptr < 1) {
+		if (*temporizador_espacio_ptr < 1 && coordenadas_espacio_ptr -> x > 100) {
 		
+			// Reducir las coordenadas en eje x para mantener centrado el sprite.
+			coordenadas_espacio_ptr -> x -= 150 * GetFrameTime();
+
 			// Aumentar el temporizador del sprite de espacio.
 			*temporizador_espacio_ptr += GetFrameTime();
 
@@ -108,8 +111,11 @@ int menu(bool* depuracion_ptr, unsigned int* escena_actual_ptr, float* posicion_
 		// Mostrar el otro sprite de espacio.
 		DrawTextureEx(*espacio_2_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
 
-		if (*temporizador_espacio_ptr < 1) {
-		
+		if (*temporizador_espacio_ptr < 1 && coordenadas_espacio_ptr -> x > 100) {
+
+			// Reducir las coordenadas en eje x para mantener centrado el sprite.
+			coordenadas_espacio_ptr -> x -= 150 * GetFrameTime();
+
 			// Aumentar el temporizador del sprite de espacio.
 			*temporizador_espacio_ptr += GetFrameTime();
 		
@@ -121,10 +127,31 @@ int menu(bool* depuracion_ptr, unsigned int* escena_actual_ptr, float* posicion_
 		}
 	
 	}
-	if (!CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr)) {
+	if (!CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr > 1) {
 	
-		*temporizador_espacio_ptr = 0;
+		DrawTextureEx(*espacio_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
 
+		if (*temporizador_espacio_ptr > 0 && coordenadas_espacio_ptr -> x < 250) {
+		
+			coordenadas_espacio_ptr -> x += 150 * GetFrameTime();
+
+			*temporizador_espacio_ptr -= GetFrameTime();
+		
+		}
+		
+	}
+	if (!CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr < 1) {
+	
+		DrawTextureEx(*espacio_2_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
+
+		if (*temporizador_espacio_ptr > 0 && coordenadas_espacio_ptr -> x < 250) {
+		
+			coordenadas_espacio_ptr -> x += 150 * GetFrameTime();
+
+			*temporizador_espacio_ptr -= GetFrameTime();
+		
+		}
+		
 	}
 
 	// Creando al jugador.
@@ -207,9 +234,10 @@ int main(void) {
 
 				// Asignando valores a los datos anteriormente creados.
 				*posicion_jugador_y_ptr = 450;
-				coordenadas_espacio_ptr -> x = 100;
+				coordenadas_espacio_ptr -> x = 250;
 				coordenadas_espacio_ptr -> y = 400;
 				*temporizador_fondo_ptr = 0;
+				*temporizador_espacio_ptr = 0;
 				*fondo_ptr = LoadTexture("recursos/fondos/menu.png");
 				*fondo_2_ptr = LoadTexture("recursos/fondos/menu_2.png");
 				*espacio_ptr = LoadTexture("recursos/sprites/espacio.png");
