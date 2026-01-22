@@ -10,7 +10,7 @@ int primerminijuego(unsigned int* escena_actual_ptr, float* temporizador_fondo_p
 int main(void) {
 
 	// Declarando variables.
-	bool depuracion = true;
+	bool depuracion = false;
 	unsigned int escena_actual = 0;
 
 	// Declarando punteros.
