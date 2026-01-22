@@ -2,175 +2,9 @@
 
 #include <raylib.h>
 
-int primerminijuego(unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr) {
-
-	// Comprobando entradas del jugador.
-	if (IsKeyDown(KEY_P)) {
-		
-		*escena_actual_ptr = 4;
-
-	}
-
-	// Administrando temporizador de fondo.
-	if (*temporizador_fondo_ptr > 2) {
-
-		*temporizador_fondo_ptr = 0;
-
-	}
-	if (*temporizador_fondo_ptr > 1 && *temporizador_fondo_ptr < 2) {
-		
-		DrawTexture(*fondo_2_ptr, 0, 0, WHITE);
-		*temporizador_fondo_ptr += 2 * GetFrameTime();
-	
-	}
-	if (*temporizador_fondo_ptr < 1) {
-		
-		DrawTexture(*fondo_ptr, 0, 0, WHITE);
-		*temporizador_fondo_ptr += 2 * GetFrameTime();
-
-	}
-
-	return 0;
-
-}
-
-// Menú inicial.
-int menu(bool* depuracion_ptr, unsigned int* escena_actual_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Vector2* coordenadas_espacio_ptr, float* temporizador_fondo_ptr, float* temporizador_espacio_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* espacio_ptr, Texture2D* espacio_2_ptr, Texture2D* cursor_ptr, Music* musica_ptr, Rectangle* hitbox_jugador_ptr, Rectangle* hitbox_salir_ptr) {
-
-	// Definiendo hitbox del jugador.
-	hitbox_jugador_ptr -> x = *posicion_jugador_x_ptr;
-	hitbox_jugador_ptr -> y = *posicion_jugador_y_ptr;
-
-	// Comprobando entradas del jugador.
-	if (IsKeyDown(KEY_D) && *posicion_jugador_x_ptr <= 450) {
-
-		*posicion_jugador_x_ptr += 100 * GetFrameTime();
-
-	}
-	if (IsKeyDown(KEY_W) && *posicion_jugador_y_ptr >= 0) {
-	
-		*posicion_jugador_y_ptr -= 100 * GetFrameTime();
-	
-	}
-	if (IsKeyDown(KEY_A) && *posicion_jugador_x_ptr >= 0) {
-	
-		*posicion_jugador_x_ptr -= 100 * GetFrameTime();
-
-	}
-	if (IsKeyDown(KEY_S) && *posicion_jugador_y_ptr <= 450) {
-			
-		*posicion_jugador_y_ptr += 100 * GetFrameTime();
-
-	}
-
-	// Administrando temporizador fondo.
-	if (*temporizador_fondo_ptr > 2) {
-
-		*temporizador_fondo_ptr = 0;
-
-	}
-
-	// Administrando fondos.
-	if (*temporizador_fondo_ptr > 1) {
-		
-		DrawTexture(*fondo_2_ptr, 0, 0, WHITE);
-		*temporizador_fondo_ptr += 2 * GetFrameTime();
-	
-	}
-	else {
-		
-		DrawTexture(*fondo_ptr, 0, 0, WHITE);
-		*temporizador_fondo_ptr += 2 * GetFrameTime();
-
-	}
-
-	// Comprobando colisiones.
-	if (CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr > 1) {
-
-		// Mostrar el sprite de espacio.
-		DrawTextureEx(*espacio_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
-
-		if (*temporizador_espacio_ptr < 1 && coordenadas_espacio_ptr -> x > 100) {
-		
-			// Reducir las coordenadas en eje x para mantener centrado el sprite.
-			coordenadas_espacio_ptr -> x -= 150 * GetFrameTime();
-
-			// Aumentar el temporizador del sprite de espacio.
-			*temporizador_espacio_ptr += GetFrameTime();
-
-		}
-		if (IsKeyDown(KEY_SPACE)) {
-		
-			*escena_actual_ptr = 2;
-		
-		}
-
-	}
-	if (CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr < 1) {
-	
-		// Mostrar el otro sprite de espacio.
-		DrawTextureEx(*espacio_2_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
-
-		if (*temporizador_espacio_ptr < 1 && coordenadas_espacio_ptr -> x > 100) {
-
-			// Reducir las coordenadas en eje x para mantener centrado el sprite.
-			coordenadas_espacio_ptr -> x -= 150 * GetFrameTime();
-
-			// Aumentar el temporizador del sprite de espacio.
-			*temporizador_espacio_ptr += GetFrameTime();
-		
-		}
-		if (IsKeyDown(KEY_SPACE)) {
-		
-			*escena_actual_ptr = 2;
-		
-		}
-	
-	}
-	if (!CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr > 1) {
-	
-		DrawTextureEx(*espacio_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
-
-		if (*temporizador_espacio_ptr > 0 && coordenadas_espacio_ptr -> x < 250) {
-		
-			coordenadas_espacio_ptr -> x += 150 * GetFrameTime();
-
-			*temporizador_espacio_ptr -= GetFrameTime();
-		
-		}
-		
-	}
-	if (!CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr < 1) {
-	
-		DrawTextureEx(*espacio_2_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
-
-		if (*temporizador_espacio_ptr > 0 && coordenadas_espacio_ptr -> x < 250) {
-		
-			coordenadas_espacio_ptr -> x += 150 * GetFrameTime();
-
-			*temporizador_espacio_ptr -= GetFrameTime();
-		
-		}
-		
-	}
-
-	// Creando al jugador.
-	DrawTexture(*cursor_ptr, *posicion_jugador_x_ptr, *posicion_jugador_y_ptr, WHITE);
-
-	// Reproduciendo música.
-	UpdateMusicStream(*musica_ptr);
-
-	// Cosas para depuración.
-	if (*depuracion_ptr == true) {
-
-		// Mostrando las coordenadas del jugador en pantalla.
-		DrawText(TextFormat("posición x del jugador: %f\nposición y del jugador: %f\nescena actual: %i\ntemporizador fondo: %f\ntemporizador espacio: %f", *posicion_jugador_x_ptr, *posicion_jugador_y_ptr, *escena_actual_ptr, *temporizador_fondo_ptr, *temporizador_espacio_ptr), 10, 150, 12, BLACK);
-
-	}
-
-	return 0;
-
-}
+// Declarando funciones antes de definirlas.
+int menu(bool* depuracion_ptr, unsigned int* escena_actual_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Vector2* coordenadas_espacio_ptr, float* temporizador_fondo_ptr, float* temporizador_espacio_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* espacio_ptr, Texture2D* espacio_2_ptr, Texture2D* cursor_ptr, Music* musica_ptr, Rectangle* hitbox_jugador_ptr, Rectangle* hitbox_salir_ptr);
+int primerminijuego(unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr);
 
 // Función principal.
 int main(void) {
@@ -310,6 +144,181 @@ int main(void) {
 
 	// Cerrando ventana.
 	CloseWindow();
+
+	return 0;
+
+}
+
+// Menú inicial.
+int menu(bool* depuracion_ptr, unsigned int* escena_actual_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Vector2* coordenadas_espacio_ptr, float* temporizador_fondo_ptr, float* temporizador_espacio_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* espacio_ptr, Texture2D* espacio_2_ptr, Texture2D* cursor_ptr, Music* musica_ptr, Rectangle* hitbox_jugador_ptr, Rectangle* hitbox_salir_ptr) {
+
+	// Definiendo hitbox del jugador.
+	hitbox_jugador_ptr -> x = *posicion_jugador_x_ptr;
+	hitbox_jugador_ptr -> y = *posicion_jugador_y_ptr;
+
+	// Comprobando entradas del jugador.
+	if (IsKeyDown(KEY_D) && *posicion_jugador_x_ptr <= 450) {
+
+		*posicion_jugador_x_ptr += 100 * GetFrameTime();
+
+	}
+	if (IsKeyDown(KEY_W) && *posicion_jugador_y_ptr >= 0) {
+	
+		*posicion_jugador_y_ptr -= 100 * GetFrameTime();
+	
+	}
+	if (IsKeyDown(KEY_A) && *posicion_jugador_x_ptr >= 0) {
+	
+		*posicion_jugador_x_ptr -= 100 * GetFrameTime();
+
+	}
+	if (IsKeyDown(KEY_S) && *posicion_jugador_y_ptr <= 450) {
+			
+		*posicion_jugador_y_ptr += 100 * GetFrameTime();
+
+	}
+
+	// Administrando temporizador fondo.
+	if (*temporizador_fondo_ptr >= 2) {
+
+		*temporizador_fondo_ptr = 0;
+
+	}
+
+	// Administrando fondos.
+	if (*temporizador_fondo_ptr > 1) {
+		
+		DrawTexture(*fondo_2_ptr, 0, 0, WHITE);
+		*temporizador_fondo_ptr += 2 * GetFrameTime();
+	
+	}
+	else {
+		
+		DrawTexture(*fondo_ptr, 0, 0, WHITE);
+		*temporizador_fondo_ptr += 2 * GetFrameTime();
+
+	}
+
+	// Comprobando colisiones.
+	if (CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr > 1) {
+
+		// Mostrar el sprite de espacio.
+		DrawTextureEx(*espacio_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
+
+		if (*temporizador_espacio_ptr <= 1 && coordenadas_espacio_ptr -> x >= 100) {
+		
+			// Reducir las coordenadas en eje x para mantener centrado el sprite.
+			coordenadas_espacio_ptr -> x -= 150 * GetFrameTime();
+
+			// Aumentar el temporizador del sprite de espacio.
+			*temporizador_espacio_ptr += GetFrameTime();
+
+		}
+		if (IsKeyDown(KEY_SPACE)) {
+		
+			*escena_actual_ptr = 2;
+		
+		}
+
+	}
+	if (CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr < 1) {
+	
+		// Mostrar el otro sprite de espacio.
+		DrawTextureEx(*espacio_2_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
+
+		if (*temporizador_espacio_ptr <= 1 && coordenadas_espacio_ptr -> x >= 100) {
+
+			// Reducir las coordenadas en eje x para mantener centrado el sprite.
+			coordenadas_espacio_ptr -> x -= 150 * GetFrameTime();
+
+			// Aumentar el temporizador del sprite de espacio.
+			*temporizador_espacio_ptr += GetFrameTime();
+		
+		}
+		// Cambiar escena al presionar espacio.
+		if (IsKeyDown(KEY_SPACE)) {
+		
+			*escena_actual_ptr = 2;
+		
+		}
+	
+	}
+	// Definiendo que hacer al no detectar colisión.
+	if (!CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr > 1) {
+	
+		// Animación de salida del sprite de espacio.
+		if (*temporizador_espacio_ptr >= 0 && coordenadas_espacio_ptr -> x < 250) {
+
+			DrawTextureEx(*espacio_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
+		
+			coordenadas_espacio_ptr -> x += 150 * GetFrameTime();
+
+			*temporizador_espacio_ptr -= GetFrameTime();
+		
+		}
+		
+	}
+	if (!CheckCollisionRecs(*hitbox_jugador_ptr, *hitbox_salir_ptr) && *temporizador_fondo_ptr < 1) {
+	
+		// Animación de salida del sprite de espacio.
+		if (*temporizador_espacio_ptr >= 0 && coordenadas_espacio_ptr -> x < 250) {
+
+			DrawTextureEx(*espacio_2_ptr, *coordenadas_espacio_ptr, 0, *temporizador_espacio_ptr, WHITE);
+		
+			coordenadas_espacio_ptr -> x += 150 * GetFrameTime();
+
+			*temporizador_espacio_ptr -= GetFrameTime();
+		
+		}
+		
+	}
+
+	// Creando al jugador.
+	DrawTexture(*cursor_ptr, *posicion_jugador_x_ptr, *posicion_jugador_y_ptr, WHITE);
+
+	// Reproduciendo música.
+	UpdateMusicStream(*musica_ptr);
+
+	// Cosas para depuración.
+	if (*depuracion_ptr == true) {
+
+		// Mostrando las coordenadas del jugador en pantalla.
+		DrawText(TextFormat("posición x del jugador: %f\nposición y del jugador: %f\nescena actual: %i\ntemporizador fondo: %f\ntemporizador espacio: %f", *posicion_jugador_x_ptr, *posicion_jugador_y_ptr, *escena_actual_ptr, *temporizador_fondo_ptr, *temporizador_espacio_ptr), 10, 150, 12, BLACK);
+
+	}
+
+	return 0;
+
+}
+
+// Primer minijuego.
+int primerminijuego(unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr) {
+
+	// Comprobando entradas del jugador.
+	if (IsKeyDown(KEY_P)) {
+		
+		*escena_actual_ptr = 4;
+
+	}
+
+	// Administrando temporizador de fondo.
+	if (*temporizador_fondo_ptr > 2) {
+
+		*temporizador_fondo_ptr = 0;
+
+	}
+	if (*temporizador_fondo_ptr > 1 && *temporizador_fondo_ptr < 2) {
+		
+		DrawTexture(*fondo_2_ptr, 0, 0, WHITE);
+		*temporizador_fondo_ptr += 2 * GetFrameTime();
+	
+	}
+	if (*temporizador_fondo_ptr < 1) {
+		
+		DrawTexture(*fondo_ptr, 0, 0, WHITE);
+		*temporizador_fondo_ptr += 2 * GetFrameTime();
+
+	}
 
 	return 0;
 
