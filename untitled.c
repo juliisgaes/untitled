@@ -3,9 +3,9 @@
 #include <raylib.h>
 
 // Declarando funciones antes de definirlas.
-int menu(unsigned int* escena_a_cambiar, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* titulo_ptr, Texture2D* titulo_2_ptr);
+int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* titulo_ptr, Texture2D* titulo_2_ptr, Texture2D* jugar_ptr, Texture2D* jugar_2_ptr, Texture2D* tutorial_ptr, Texture2D* tutorial_2_ptr, Texture2D* salir_ptr, Texture2D* salir_2_ptr);
 int tutorial(bool* depuracion_ptr, unsigned int* escena_a_cambiar, unsigned int* escena_actual_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Vector2* coordenadas_espacio_ptr, float* temporizador_fondo_ptr, float* escala_espacio_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* espacio_ptr, Texture2D* espacio_2_ptr, Texture2D* cursor_ptr, Music* musica_ptr, Rectangle* hitbox_jugador_ptr, Rectangle* hitbox_salir_ptr);
-int primerminijuego(unsigned int* escena_a_cambiar, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr);
+int primermj(unsigned int* escena_a_cambiar, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr);
 
 // Función principal.
 int main(void) {
@@ -51,6 +51,12 @@ int main(void) {
 				Texture2D* menu_fondo_2_ptr = MemAlloc(sizeof(Texture2D));
 				Texture2D* titulo_ptr = MemAlloc(sizeof(Texture2D));
 				Texture2D* titulo_2_ptr = MemAlloc(sizeof(Texture2D));
+				Texture2D* jugar_ptr = MemAlloc(sizeof(Texture2D));
+				Texture2D* jugar_2_ptr = MemAlloc(sizeof(Texture2D));
+				Texture2D* tutorial_ptr = MemAlloc(sizeof(Texture2D));
+				Texture2D* tutorial_2_ptr = MemAlloc(sizeof(Texture2D));
+				Texture2D* salir_ptr = MemAlloc(sizeof(Texture2D));
+				Texture2D* salir_2_ptr = MemAlloc(sizeof(Texture2D));
 
 				// Asignando valores a los datos anteriormente creados.
 				*menu_temporizador_fondo_ptr = 0;
@@ -58,6 +64,12 @@ int main(void) {
 				*menu_fondo_2_ptr = LoadTexture("recursos/fondos/menu_2.png");
 				*titulo_ptr = LoadTexture("recursos/sprites/titulo.png");
 				*titulo_2_ptr = LoadTexture("recursos/sprites/titulo_2.png");
+				*jugar_ptr = LoadTexture("recursos/sprites/jugar.png");
+				*jugar_2_ptr = LoadTexture("recursos/sprites/jugar_2.png");
+				*tutorial_ptr = LoadTexture("recursos/sprites/tutorial.png");
+				*tutorial_2_ptr = LoadTexture("recursos/sprites/tutorial_2.png");
+				*salir_ptr = LoadTexture("recursos/sprites/salir.png");
+				*salir_2_ptr = LoadTexture("recursos/sprites/salir_2.png");
 
 				// Cambiando de escena.
 				escena_actual = 1;
@@ -66,16 +78,28 @@ int main(void) {
 
 			// Ejecutando menú.
 			case 1:
-				menu(escena_a_cambiar_ptr, escena_actual_ptr, menu_temporizador_fondo_ptr, menu_fondo_ptr, menu_fondo_2_ptr, titulo_ptr, titulo_2_ptr);
+				menu(escena_a_cambiar_ptr, escena_actual_ptr, menu_temporizador_fondo_ptr, menu_fondo_ptr, menu_fondo_2_ptr, titulo_ptr, titulo_2_ptr, jugar_ptr, jugar_2_ptr, tutorial_ptr, tutorial_2_ptr, salir_ptr, salir_2_ptr);
 			break;
 
 			// Liberando memoria reservada para el menú.
 			case 2:
 
+				UnloadTexture(*salir_2_ptr);
+				UnloadTexture(*salir_ptr);
+				UnloadTexture(*tutorial_2_ptr);
+				UnloadTexture(*tutorial_ptr);
+				UnloadTexture(*jugar_2_ptr);
+				UnloadTexture(*jugar_ptr);
 				UnloadTexture(*titulo_2_ptr);
 				UnloadTexture(*titulo_ptr);
 				UnloadTexture(*menu_fondo_2_ptr);
 				UnloadTexture(*menu_fondo_ptr);
+				MemFree(salir_2_ptr);
+				MemFree(salir_ptr);
+				MemFree(tutorial_2_ptr);
+				MemFree(tutorial_ptr);
+				MemFree(jugar_2_ptr);
+				MemFree(jugar_ptr);
 				MemFree(titulo_2_ptr);
 				MemFree(titulo_ptr);
 				MemFree(menu_fondo_2_ptr);
@@ -180,16 +204,16 @@ int main(void) {
 			case 6:
 		
 				// Reservando memoria para el temporizador.
-				float* primerminijuego_temporizador_fondo_ptr = MemAlloc(sizeof(float));
+				float* primermj_temporizador_fondo_ptr = MemAlloc(sizeof(float));
 
 				// Reservando memoria para texturas.
-				Texture2D* primerminijuego_fondo_ptr = MemAlloc(sizeof(Texture2D));
-				Texture2D* primerminijuego_fondo_2_ptr = MemAlloc(sizeof(Texture2D));
+				Texture2D* primermj_fondo_ptr = MemAlloc(sizeof(Texture2D));
+				Texture2D* primermj_fondo_2_ptr = MemAlloc(sizeof(Texture2D));
 
 				// Asignando valores a los datos anteriormente creados.
-				*primerminijuego_temporizador_fondo_ptr = 0;
-				*primerminijuego_fondo_ptr = LoadTexture("recursos/fondos/tutorial.png");
-				*primerminijuego_fondo_2_ptr = LoadTexture("recursos/fondos/tutorial_2.png");
+				*primermj_temporizador_fondo_ptr = 0;
+				*primermj_fondo_ptr = LoadTexture("recursos/fondos/tutorial.png");
+				*primermj_fondo_2_ptr = LoadTexture("recursos/fondos/tutorial_2.png");
 
 				// Cambiando de escena.
 				escena_actual = 7;
@@ -198,20 +222,24 @@ int main(void) {
 
 			// Ejecutando primer mini juego.
 			case 7:
-				primerminijuego(escena_a_cambiar_ptr, escena_actual_ptr, primerminijuego_temporizador_fondo_ptr, primerminijuego_fondo_ptr, primerminijuego_fondo_2_ptr);
+				primermj(escena_a_cambiar_ptr, escena_actual_ptr, primermj_temporizador_fondo_ptr, primermj_fondo_ptr, primermj_fondo_2_ptr);
 			break;
 
 			// Liberando memoria reservada para el primer mini juego.
 			case 8:
 
-				UnloadTexture(*primerminijuego_fondo_2_ptr);
-				UnloadTexture(*primerminijuego_fondo_ptr);
-				MemFree(primerminijuego_fondo_2_ptr);
-				MemFree(primerminijuego_fondo_ptr);
-				MemFree(primerminijuego_temporizador_fondo_ptr);
+				UnloadTexture(*primermj_fondo_2_ptr);
+				UnloadTexture(*primermj_fondo_ptr);
+				MemFree(primermj_fondo_2_ptr);
+				MemFree(primermj_fondo_ptr);
+				MemFree(primermj_temporizador_fondo_ptr);
 
 				// Cambiando de escena.
 				escena_actual = escena_a_cambiar;
+
+			break;
+
+			case 9:
 
 			break;
 
@@ -233,7 +261,7 @@ int main(void) {
 }
 
 // Menú.
-int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* titulo_ptr, Texture2D* titulo_2_ptr) {
+int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* titulo_ptr, Texture2D* titulo_2_ptr, Texture2D* jugar_ptr, Texture2D* jugar_2_ptr, Texture2D* tutorial_ptr, Texture2D* tutorial_2_ptr, Texture2D* salir_ptr, Texture2D* salir_2_ptr) {
 
 	// Comprobando entradas del jugador.
 	if (IsKeyDown(KEY_P)) {
@@ -245,6 +273,12 @@ int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, fl
 	if (IsKeyDown(KEY_L)) {
 	
 		*escena_a_cambiar_ptr = 6;
+		*escena_actual_ptr = 2;
+	
+	}
+	if (IsKeyDown(KEY_M)) {
+	
+		*escena_a_cambiar_ptr = 9;
 		*escena_actual_ptr = 2;
 	
 	}
@@ -260,17 +294,23 @@ int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, fl
 	if (*temporizador_fondo_ptr > 1) {
 		
 		DrawTexture(*fondo_2_ptr, 0, 0, WHITE);
+		DrawTexture(*titulo_ptr, 20, 0, WHITE);
+		DrawTexture(*jugar_ptr, 60, 210, WHITE);
+		DrawTexture(*tutorial_ptr, 60, 305, WHITE);
+		DrawTexture(*salir_ptr, 60, 400, WHITE);
 		*temporizador_fondo_ptr += 2 * GetFrameTime();
 	
 	}
 	else {
 		
 		DrawTexture(*fondo_ptr, 0, 0, WHITE);
+		DrawTexture(*titulo_2_ptr, 20, 0, WHITE);
+		DrawTexture(*jugar_2_ptr, 60, 210, WHITE);
+		DrawTexture(*tutorial_2_ptr, 60, 305, WHITE);
+		DrawTexture(*salir_2_ptr, 60, 400, WHITE);
 		*temporizador_fondo_ptr += 2 * GetFrameTime();
 
 	}
-
-	return 0;
 
 }
 
@@ -419,7 +459,7 @@ int tutorial(bool* depuracion_ptr, unsigned int* escena_a_cambiar_ptr, unsigned 
 }
 
 // Primer minijuego.
-int primerminijuego(unsigned int* escena_a_cambiar, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr) {
+int primermj(unsigned int* escena_a_cambiar, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr) {
 
 	// Comprobando entradas del jugador.
 	if (IsKeyDown(KEY_P)) {
