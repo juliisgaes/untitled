@@ -3,7 +3,7 @@
 #include <raylib.h>
 
 // Declarando funciones antes de definirlas.
-int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* titulo_ptr, Texture2D* titulo_2_ptr, Texture2D* jugar_ptr, Texture2D* jugar_2_ptr, Texture2D* tutorial_ptr, Texture2D* tutorial_2_ptr, Texture2D* salir_ptr, Texture2D* salir_2_ptr);
+int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Vector2* coordenadas_cursor_ptr, Rectangle* hitbox_jugar_ptr, Rectangle* hitbox_tutorial_ptr, Rectangle* hitbox_salir_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* titulo_ptr, Texture2D* titulo_2_ptr, Texture2D* jugar_ptr, Texture2D* jugar_2_ptr, Texture2D* tutorial_ptr, Texture2D* tutorial_2_ptr, Texture2D* salir_ptr, Texture2D* salir_2_ptr);
 int tutorial(bool* depuracion_ptr, unsigned int* escena_a_cambiar, unsigned int* escena_actual_ptr, float* posicion_jugador_x_ptr, float* posicion_jugador_y_ptr, Vector2* coordenadas_espacio_ptr, float* temporizador_fondo_ptr, float* escala_espacio_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* espacio_ptr, Texture2D* espacio_2_ptr, Texture2D* cursor_ptr, Music* musica_ptr, Rectangle* hitbox_jugador_ptr, Rectangle* hitbox_salir_ptr);
 int primermj(unsigned int* escena_a_cambiar, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr);
 
@@ -20,7 +20,7 @@ int main(void) {
 	unsigned int* escena_actual_ptr = &escena_actual;
 
 	// Creando la ventana principal.
-	InitWindow(500, 500, "untitled - 0.1");
+	InitWindow(500, 500, "untitled - 0.2");
 
 	// Inicializando audio.
 	InitAudioDevice();
@@ -29,7 +29,7 @@ int main(void) {
 	SetTargetFPS(60);
 
 	// Bucle para actualizar pantalla.
-	while (!WindowShouldClose()) {
+	while (!WindowShouldClose() && escena_actual != 9) {
 
 		// Comenzando a dibujar.
 		BeginDrawing();
@@ -45,6 +45,14 @@ int main(void) {
 
 				// Reservando memoria para el temporizador.
 				float* menu_temporizador_fondo_ptr = MemAlloc(sizeof(float));
+
+				// Reservando memoria para coordenadas del cursor.
+				Vector2* coordenadas_cursor_ptr = MemAlloc(sizeof(Vector2));
+
+				// Reservando memoria para hitboxes.
+				Rectangle* hitbox_jugar_ptr = MemAlloc(sizeof(Rectangle));
+				Rectangle* hitbox_tutorial_ptr = MemAlloc(sizeof(Rectangle));
+				Rectangle* menu_hitbox_salir_ptr = MemAlloc(sizeof(Rectangle));
 	  
 				// Reservando memoria para texturas.
 				Texture2D* menu_fondo_ptr = MemAlloc(sizeof(Texture2D));
@@ -60,6 +68,18 @@ int main(void) {
 
 				// Asignando valores a los datos anteriormente creados.
 				*menu_temporizador_fondo_ptr = 0;
+				hitbox_jugar_ptr -> x = 60;
+				hitbox_jugar_ptr -> y = 210;
+				hitbox_jugar_ptr -> width = 380;
+				hitbox_jugar_ptr -> height = 95;
+				hitbox_tutorial_ptr -> x = 60;
+				hitbox_tutorial_ptr -> y = 305;
+				hitbox_tutorial_ptr -> width = 380;
+				hitbox_tutorial_ptr -> height = 95;
+				menu_hitbox_salir_ptr -> x = 60;
+				menu_hitbox_salir_ptr -> y = 400;
+				menu_hitbox_salir_ptr -> width = 380;
+				menu_hitbox_salir_ptr -> height = 95;
 				*menu_fondo_ptr = LoadTexture("recursos/fondos/menu.png");
 				*menu_fondo_2_ptr = LoadTexture("recursos/fondos/menu_2.png");
 				*titulo_ptr = LoadTexture("recursos/sprites/titulo.png");
@@ -78,7 +98,7 @@ int main(void) {
 
 			// Ejecutando menú.
 			case 1:
-				menu(escena_a_cambiar_ptr, escena_actual_ptr, menu_temporizador_fondo_ptr, menu_fondo_ptr, menu_fondo_2_ptr, titulo_ptr, titulo_2_ptr, jugar_ptr, jugar_2_ptr, tutorial_ptr, tutorial_2_ptr, salir_ptr, salir_2_ptr);
+				menu(escena_a_cambiar_ptr, escena_actual_ptr, menu_temporizador_fondo_ptr, coordenadas_cursor_ptr, hitbox_jugar_ptr, hitbox_tutorial_ptr, menu_hitbox_salir_ptr, menu_fondo_ptr, menu_fondo_2_ptr, titulo_ptr, titulo_2_ptr, jugar_ptr, jugar_2_ptr, tutorial_ptr, tutorial_2_ptr, salir_ptr, salir_2_ptr);
 			break;
 
 			// Liberando memoria reservada para el menú.
@@ -104,6 +124,10 @@ int main(void) {
 				MemFree(titulo_ptr);
 				MemFree(menu_fondo_2_ptr);
 				MemFree(menu_fondo_ptr);
+				MemFree(menu_hitbox_salir_ptr);
+				MemFree(hitbox_tutorial_ptr);
+				MemFree(hitbox_jugar_ptr);
+				MemFree(coordenadas_cursor_ptr);
 				MemFree(menu_temporizador_fondo_ptr);
 
 				// Cambiando de escena.
@@ -127,7 +151,7 @@ int main(void) {
 
 				// Reservando memoria para hitboxes.
 				Rectangle* hitbox_jugador_ptr = MemAlloc(sizeof(Rectangle));
-				Rectangle* hitbox_salir_ptr = MemAlloc(sizeof(Rectangle));
+				Rectangle* tutorial_hitbox_salir_ptr = MemAlloc(sizeof(Rectangle));
 
 				// Reservando memoria para texturas.
 				Texture2D* tutorial_fondo_ptr = MemAlloc(sizeof(Texture2D));
@@ -153,10 +177,10 @@ int main(void) {
 				*musica_ptr = LoadMusicStream("recursos/musica/menu.mp3");
 				hitbox_jugador_ptr -> width = 50;
 				hitbox_jugador_ptr -> height = 50;
-				hitbox_salir_ptr -> x = 150;
-				hitbox_salir_ptr -> y = 0;
-				hitbox_salir_ptr -> width = 200;
-				hitbox_salir_ptr -> height = 100;
+				tutorial_hitbox_salir_ptr -> x = 150;
+				tutorial_hitbox_salir_ptr -> y = 0;
+				tutorial_hitbox_salir_ptr -> width = 200;
+				tutorial_hitbox_salir_ptr -> height = 100;
 
 				// Iniciando el stream de música.
 				PlayMusicStream(*musica_ptr);
@@ -168,7 +192,7 @@ int main(void) {
 
 			// Ejecutando tutorial.
 			case 4:
-				tutorial(depuracion_ptr, escena_a_cambiar_ptr, escena_actual_ptr, posicion_jugador_x_ptr, posicion_jugador_y_ptr, coordenadas_espacio_ptr, tutorial_temporizador_fondo_ptr, escala_espacio_ptr, tutorial_fondo_ptr, tutorial_fondo_2_ptr, espacio_ptr, espacio_2_ptr, cursor_ptr, musica_ptr, hitbox_jugador_ptr, hitbox_salir_ptr);
+				tutorial(depuracion_ptr, escena_a_cambiar_ptr, escena_actual_ptr, posicion_jugador_x_ptr, posicion_jugador_y_ptr, coordenadas_espacio_ptr, tutorial_temporizador_fondo_ptr, escala_espacio_ptr, tutorial_fondo_ptr, tutorial_fondo_2_ptr, espacio_ptr, espacio_2_ptr, cursor_ptr, musica_ptr, hitbox_jugador_ptr, tutorial_hitbox_salir_ptr);
 			break;
 
 			// Liberando memoria reservada para el tutorial.
@@ -187,7 +211,7 @@ int main(void) {
 				MemFree(espacio_ptr);
 				MemFree(tutorial_fondo_2_ptr);
 				MemFree(tutorial_fondo_ptr);
-				MemFree(hitbox_salir_ptr);
+				MemFree(tutorial_hitbox_salir_ptr);
 				MemFree(hitbox_jugador_ptr);
 				MemFree(escala_espacio_ptr);
 				MemFree(tutorial_temporizador_fondo_ptr);
@@ -261,22 +285,25 @@ int main(void) {
 }
 
 // Menú.
-int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* titulo_ptr, Texture2D* titulo_2_ptr, Texture2D* jugar_ptr, Texture2D* jugar_2_ptr, Texture2D* tutorial_ptr, Texture2D* tutorial_2_ptr, Texture2D* salir_ptr, Texture2D* salir_2_ptr) {
+int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, float* temporizador_fondo_ptr, Vector2* coordenadas_cursor_ptr, Rectangle* hitbox_jugar_ptr, Rectangle* hitbox_tutorial_ptr, Rectangle* hitbox_salir_ptr, Texture2D* fondo_ptr, Texture2D* fondo_2_ptr, Texture2D* titulo_ptr, Texture2D* titulo_2_ptr, Texture2D* jugar_ptr, Texture2D* jugar_2_ptr, Texture2D* tutorial_ptr, Texture2D* tutorial_2_ptr, Texture2D* salir_ptr, Texture2D* salir_2_ptr) {
 
+	// Obteniendo posición de cursor.
+	*coordenadas_cursor_ptr = GetMousePosition();
+	
 	// Comprobando entradas del jugador.
-	if (IsKeyDown(KEY_P)) {
+	if (CheckCollisionPointRec(*coordenadas_cursor_ptr, *hitbox_jugar_ptr) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
 	
 		*escena_a_cambiar_ptr = 3;
 		*escena_actual_ptr = 2;
 	
 	}
-	if (IsKeyDown(KEY_L)) {
+	if (CheckCollisionPointRec(*coordenadas_cursor_ptr, *hitbox_tutorial_ptr) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
 	
 		*escena_a_cambiar_ptr = 6;
 		*escena_actual_ptr = 2;
 	
 	}
-	if (IsKeyDown(KEY_M)) {
+	if (CheckCollisionPointRec(*coordenadas_cursor_ptr, *hitbox_salir_ptr) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
 	
 		*escena_a_cambiar_ptr = 9;
 		*escena_actual_ptr = 2;
@@ -311,6 +338,8 @@ int menu(unsigned int* escena_a_cambiar_ptr, unsigned int* escena_actual_ptr, fl
 		*temporizador_fondo_ptr += 2 * GetFrameTime();
 
 	}
+
+	return 0;
 
 }
 
